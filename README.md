@@ -8,7 +8,6 @@ Full-stack inventory and order management application with a FastAPI backend, Re
 - **Frontend:** React (JavaScript), Vite, React Router, Axios
 - **Database:** PostgreSQL
 - **Containerization:** Docker, Docker Compose
-- **Deployment:** Railway
 
 ## Features
 
@@ -25,7 +24,7 @@ On first startup, a default admin is created if one does not exist. Set `DEFAULT
 | Field    | Value                 |
 |----------|-----------------------|
 | Email    | `admin@inventory.com` |
-| Password | Value of `DEFAULT_ADMIN_PASSWORD` |
+| Password | `admin123` |
 
 
 ## Local Development
@@ -77,52 +76,6 @@ docker compose down -v
 | Customers | `POST/GET/GET{id}/DELETE /customers` |
 | Orders    | `POST/GET/GET{id}/DELETE /orders` |
 | Dashboard | `GET /dashboard/summary` |
-
-## Railway Deployment
-
-### 1. Create Railway Project
-
-1. Sign up at [railway.app](https://railway.app)
-2. Create a new project
-3. Add a **PostgreSQL** plugin and note the `DATABASE_URL`
-
-### 2. Deploy Backend
-
-1. Add a new service from your GitHub repo
-2. Set **Root Directory** to `backend`
-3. Set environment variables:
-   - `DATABASE_URL` — from the PostgreSQL plugin (Railway provides this automatically when you link the database)
-   - `CORS_ORIGINS` — your frontend Railway URL (e.g. `https://your-frontend.up.railway.app`)
-   - `JWT_SECRET_KEY` — a strong random secret for signing JWT tokens
-   - `JWT_ALGORITHM` — `HS256`
-   - `ACCESS_TOKEN_EXPIRE_MINUTES` — e.g. `480`
-   - `DEFAULT_ADMIN_EMAIL` — e.g. `admin@inventory.com`
-   - `DEFAULT_ADMIN_NAME` — e.g. `Admin`
-   - `DEFAULT_ADMIN_PASSWORD` — password for the initial admin account
-4. Railway builds from `backend/Dockerfile` (or uses `railway.toml`)
-5. Migrations run automatically on startup via `entrypoint.sh`
-6. Note the generated backend URL for the frontend build
-
-### 3. Deploy Frontend
-
-1. Add another service from the same repo
-2. Set **Root Directory** to `frontend`
-3. Set **Dockerfile target** to `production` (or configure Railway to use the production stage)
-4. Set build-time variable:
-   - `VITE_API_URL` — your backend Railway URL (e.g. `https://your-backend.up.railway.app`)
-5. Railway builds the Nginx production image from `frontend/Dockerfile`
-
-### 4. Link Services
-
-- In the backend service, reference the PostgreSQL plugin's `DATABASE_URL`
-- Ensure `CORS_ORIGINS` on the backend includes the exact frontend URL (no trailing slash)
-- Redeploy frontend after backend URL is known so `VITE_API_URL` is correct at build time
-
-### 5. Verify
-
-- Backend: visit `https://<backend-url>/docs`
-- Frontend: visit your frontend URL
-- Create a product, customer, and order to confirm end-to-end flow
 
 ## Environment Variables
 
