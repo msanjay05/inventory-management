@@ -1,0 +1,7 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "sh /app/entrypoint.sh"
+restartPolicyType = "ON_FAILURE"
